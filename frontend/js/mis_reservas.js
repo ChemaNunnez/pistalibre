@@ -80,7 +80,7 @@ async function cargarReservas() {
                     </div>
                 ` : ""}
 
-                ${!reserva.resultado && reserva.estado !== "cancelada" ? `
+                ${!reserva.resultado && !reserva.equipos && !reserva.comentario_instalacion && reserva.estado !== "cancelada" ? `
                     <div class="anotacion-form">
                         <h4>Añadir anotación</h4>
 

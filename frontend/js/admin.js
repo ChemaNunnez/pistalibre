@@ -278,7 +278,7 @@ function mostrarReservasFijas(reservas) {
                 <p><strong>Profesor:</strong> ${reserva.nombre} ${reserva.apellidos} (${reserva.alias})</p>
                 <p><strong>Pista:</strong> ${reserva.pista}</p>
                 <p><strong>Día:</strong> ${reserva.dia_semana}</p>
-                <p><strong>Horario:</strong> ${reserva.hora_inicio} - ${reserva.hora_fin}</p>
+                <p><strong>Horario:</strong> ${reserva.hora_inicio.substring(0,5)} - ${reserva.hora_fin.substring(0,5)}</p>
                 <p><strong>Vigencia:</strong> ${formatearFecha(reserva.fecha_inicio)} → ${formatearFecha(reserva.fecha_fin)}</p>
                 <p>
                     <strong>Estado:</strong>
@@ -308,10 +308,11 @@ function mostrarReservasFijas(reservas) {
                         Desactivar reserva fija
                     </button>
 
-                    <button onclick="verDetalleReservaFija(${reserva.id_reserva_fija})">
+                ` : ""}
+
+                <button onclick="verDetalleReservaFija(${reserva.id_reserva_fija})">
                         Ver detalle
                     </button>
-                ` : ""}
 
             </article>
         `;
@@ -357,9 +358,14 @@ async function verDetalleReservaFija(idReservaFija) {
             return `
                 <div class="detalle-item">
                     <p><strong>Fecha:</strong> ${formatearFecha(extra.fecha)}</p>
-                    <p><strong>Horario:</strong> ${extra.hora_inicio} - ${extra.hora_fin}</p>
+                    <p><strong>Horario:</strong> ${extra.hora_inicio.substring(0,5)} - ${extra.hora_fin.substring(0,5)}</p>
                     <p><strong>Pista:</strong> ${extra.pista}</p>
                     <p><strong>Estado:</strong> <span class="${claseEstadoExtra}">${estadoExtra}</span></p>
+
+                    ${extra.motivo_cancelacion ? `
+                        <p><strong>Motivo cancelación:</strong> ${extra.motivo_cancelacion}</p>
+                    ` : ""}
+
                     <p><strong>Observaciones:</strong> ${extra.observaciones || "-"}</p>
                 </div>
             `;
@@ -372,7 +378,7 @@ async function verDetalleReservaFija(idReservaFija) {
             <p><strong>Deporte:</strong> ${reserva.deporte}</p>
             <p><strong>Pista:</strong> ${reserva.pista}</p>
             <p><strong>Día:</strong> ${reserva.dia_semana}</p>
-            <p><strong>Horario:</strong> ${reserva.hora_inicio} - ${reserva.hora_fin}</p>
+            <p><strong>Horario:</strong> ${reserva.hora_inicio.substring(0,5)} - ${reserva.hora_fin.substring(0,5)}</p>
             <p><strong>Vigencia:</strong> ${formatearFecha(reserva.fecha_inicio)} → ${formatearFecha(reserva.fecha_fin)}</p>
         </div>
 
@@ -449,7 +455,8 @@ async function liberarClase() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                id_reserva_extra: idReservaExtra
+                id_reserva_extra: idReservaExtra,
+                motivo: motivoLiberar.value
             })
         });
     } else {

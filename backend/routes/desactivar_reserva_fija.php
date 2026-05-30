@@ -27,6 +27,8 @@ if (empty($id_reserva_fija)) {
 }
 
 try {
+    $conexion->beginTransaction();
+
     $sql = "UPDATE reserva_fija
             SET activa = 0
             WHERE id_reserva_fija = :id_reserva_fija";
@@ -36,13 +38,30 @@ try {
         ":id_reserva_fija" => $id_reserva_fija
     ]);
 
+    $sql = "UPDATE reserva_extra_clase
+            SET activa = 0
+            WHERE id_reserva_fija = :id_reserva_fija";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([
+        ":id_reserva_fija" => $id_reserva_fija
+    ]);
+
+    $conexion->commit();
+
     echo json_encode([
         "success" => true,
-        "mensaje" => "Reserva fija desactivada correctamente"
+        "mensaje" => "Reserva fija y recuperaciones asociadas desactivadas correctamente"
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {
+
+    if ($conexion->inTransaction()) {
+        $conexion->rollBack();
+    }
+
     http_response_code(500);
+
     echo json_encode([
         "success" => false,
         "error" => "Error al desactivar la reserva fija"

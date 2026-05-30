@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 $datos = json_decode(file_get_contents("php://input"), true);
 
 $id_reserva_extra = $datos["id_reserva_extra"] ?? null;
+$motivo = trim($datos["motivo"] ?? "");
 
 if (empty($id_reserva_extra)) {
     http_response_code(400);
@@ -28,12 +29,14 @@ if (empty($id_reserva_extra)) {
 
 try {
     $sql = "UPDATE reserva_extra_clase
-            SET activa = 0
+            SET activa = 0,
+                motivo_cancelacion = :motivo
             WHERE id_reserva_extra = :id_reserva_extra";
 
     $stmt = $conexion->prepare($sql);
     $stmt->execute([
-        ":id_reserva_extra" => $id_reserva_extra
+        ":id_reserva_extra" => $id_reserva_extra,
+        ":motivo" => $motivo
     ]);
 
     echo json_encode([

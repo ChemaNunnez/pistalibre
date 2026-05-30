@@ -111,6 +111,7 @@ try {
 
                 rec.observaciones,
                 rec.activa,
+                rec.motivo_cancelacion,
 
                 p.nombre AS pista
 
