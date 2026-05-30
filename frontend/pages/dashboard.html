@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PistaLibre - Dashboard</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="logo-header">
+        <img src="../assets/img/pistalibre-logo.png" alt="Logo PistaLibre">
+        <span>PistaLibre</span>
+    </div>
+        <nav>
+            <a href="dashboard.html">Inicio</a>
+            <a href="calendario.html">Pistas</a>
+            <a href="mis_reservas.html">Mis reservas</a>
+            <button id="btnLogout">Cerrar sesión</button>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="welcome-card">
+            <h2 id="bienvenida">Bienvenido</h2>
+            <p id="rolUsuario"></p>
+            <p>Gestiona tus reservas deportivas de forma rápida y sencilla.</p>
+        </section>
+
+        <section class="dashboard-grid">
+            <article class="dashboard-card">
+                <h3>Ver pistas disponibles</h3>
+                <p>Consulta horarios libres y realiza una reserva.</p>
+                <a href="calendario.html" class="btn-card">Ver pistas</a>
+            </article>
+
+            <article class="dashboard-card">
+                <h3>Mis reservas</h3>
+                <p>Consulta tus reservas activas, canceladas e histórico.</p>
+                <a href="mis_reservas.html" class="btn-card">Ver reservas</a>
+            </article>
+
+            <article class="dashboard-card">
+                <h3>Nueva reserva</h3>
+                <p>Selecciona centro, deporte, pista y horario.</p>
+                <a href="calendario.html" class="btn-card">Reservar</a>
+            </article>
+
+            <article class="dashboard-card" id="cardProfesor" style="display: none;">
+                <h3>Gestión de clases</h3>
+                <p>Crea reservas fijas, libera clases y registra recuperaciones.</p>
+                <a href="profesor.html" class="btn-card">Panel profesor</a>
+            </article>
+
+            <article class="dashboard-card" id="cardAdmin" style="display: none;">
+                <h3>Administración</h3>
+                <p>Gestiona usuarios, centros, pistas, deportes y reservas.</p>
+                <a href="admin.html" class="btn-card">Panel admin</a>
+            </article>
+        </section>
+    </main>
+
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

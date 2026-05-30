@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PistaLibre - Profesor</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<header class="app-header">
+    <div class="logo-header">
+        <img src="../assets/img/pistalibre-logo.png" alt="Logo PistaLibre">
+        <span>PistaLibre</span>
+    </div>
+
+    <nav>
+        <a href="dashboard.html">Inicio</a>
+        <a href="calendario.html">Pistas</a>
+        <a href="mis_reservas.html">Mis reservas</a>
+        <a href="profesor.html">Profesor</a>
+        <button id="btnLogout">Cerrar sesión</button>
+    </nav>
+</header>
+
+<main class="dashboard-container">
+
+    <section class="welcome-card">
+        <h2>Panel de Profesor</h2>
+        <p>Gestión de clases y reservas recurrentes.</p>
+    </section>
+
+    <section class="form-card">
+
+        <h3 style="grid-column: 1 / -1;">Crear reserva fija</h3>
+
+        <div id="contenedorProfesor" class="campo-formulario">
+            <label>Profesor</label>
+
+            <select id="profesor"></select>
+
+            <p id="profesorTexto" class="profesor-info" style="display:none;"></p>
+        </div>
+
+        <div class="campo-formulario">
+            <label>Pista</label>
+            <select id="pista"></select>
+        </div>
+
+        <div class="campo-formulario">
+            <label>Día semana</label>
+            <select id="diaSemana">
+                <option>Lunes</option>
+                <option>Martes</option>
+                <option value="Miercoles">Miércoles</option>
+                <option>Jueves</option>
+                <option>Viernes</option>
+                <option value="Sabado">Sábado</option>
+                <option>Domingo</option>
+            </select>
+        </div>
+
+        <div class="campo-formulario">
+            <label>Deporte</label>
+            <select id="deporte"></select>
+        </div>
+
+        <div class="campo-formulario">
+            <label>Hora inicio</label>
+            <input type="time" id="horaInicio">
+        </div>
+
+        <div class="campo-formulario">
+            <label>Hora fin</label>
+            <input type="time" id="horaFin">
+        </div>
+
+        <div class="campo-formulario">
+            <label>Fecha inicio</label>
+            <input type="date" id="fechaInicio">
+        </div>
+
+        <div class="campo-formulario">
+            <label>Fecha fin</label>
+            <input type="date" id="fechaFin">
+        </div>
+
+        <div class="campo-formulario" style="grid-column: 1 / -1;">
+            <label>Observaciones</label>
+            <input type="text" id="observaciones">
+        </div>
+
+        <button id="btnCrearReservaFija">
+            Crear reserva fija
+        </button>
+
+    </section>
+
+    <section class="tabla-card">
+        <h3>Resultado</h3>
+        <div id="resultado"></div>
+    </section>
+
+    <section class="tabla-card">
+        <h3>Reservas fijas existentes</h3>
+
+        <div id="reservasFijas">
+            Cargando reservas...
+        </div>
+
+        <div id="modalLiberar" class="modal" style="display:none;">
+            <div class="modal-content">
+
+                <h3>Liberar clase</h3>
+
+                <input type="hidden" id="idReservaFijaLiberar">
+
+                <label>Fecha</label>
+                <input type="date" id="fechaLiberar">
+
+                <label>Motivo</label>
+                <input type="text" id="motivoLiberar">
+
+                <button id="btnConfirmarLiberar">
+                    Confirmar
+                </button>
+
+                <button id="btnCancelarLiberar">
+                    Cancelar
+                </button>
+
+            </div>
+        </div>
+
+        <div id="modalExtra" class="modal" style="display:none;">
+            <div class="modal-content">
+
+                <h3>Crear recuperación de clase</h3>
+
+                <input type="hidden" id="idReservaFijaExtra">
+
+                <label>Pista</label>
+                <select id="pistaExtra"></select>
+
+                <label>Fecha</label>
+                <input type="date" id="fechaExtra">
+
+                <label>Hora inicio</label>
+                <input type="time" id="horaInicioExtra">
+
+                <label>Hora fin</label>
+                <input type="time" id="horaFinExtra">
+
+                <label>Observaciones</label>
+                <input type="text" id="observacionesExtra">
+
+                <button id="btnConfirmarExtra">Confirmar</button>
+                <button id="btnCancelarExtra">Cancelar</button>
+
+            </div>
+        </div>
+
+        <div id="modalDetalleReservaFija" class="modal" style="display:none;">
+                <div class="modal-content">
+
+                    <h3>Detalle de reserva fija</h3>
+
+                    <div id="detalleReservaFija"></div>
+
+                    <button id="btnCerrarDetalleReservaFija">
+                        Cerrar
+                    </button>
+
+                </div>
+            </div>
+    </section>
+
+</main>
+
+<script src="../js/profesor.js"></script>
+</body>
+</html>
