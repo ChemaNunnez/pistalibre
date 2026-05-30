@@ -11,6 +11,17 @@ document.getElementById("btnLogout").addEventListener("click", function () {
 
 const reservasDiv = document.getElementById("reservas");
 
+const menuProfesor = document.getElementById("menuProfesor");
+const menuAdmin = document.getElementById("menuAdmin");
+
+if (menuProfesor && usuario.roles.includes("profesor")) {
+    menuProfesor.style.display = "inline-block";
+}
+
+if (menuAdmin && usuario.roles.includes("admin")) {
+    menuAdmin.style.display = "inline-block";
+}
+
 async function cargarReservas() {
     const respuesta = await fetch(`../../backend/routes/mis_reservas.php?id_usuario=${usuario.id_usuario}`);
     const datos = await respuesta.json();
@@ -74,7 +85,7 @@ async function cargarReservas() {
                         <h4>Añadir anotación</h4>
 
                         <label>Equipos</label>
-                        <input type="text" id="equipos_${reserva.id_reserva}" placeholder="Ej: Registro2 vs Chema">
+                        <input type="text" id="equipos_${reserva.id_reserva}" placeholder="Ej: Usuario1 vs Usuario2 || Usuario1/Usuario2 vs Usuario3/Usuario4">
 
                         <label>Resultado</label>
                         <input type="text" id="resultado_${reserva.id_reserva}" placeholder="Ej: 6-4">

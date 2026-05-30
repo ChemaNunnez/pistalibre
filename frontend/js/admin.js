@@ -49,7 +49,47 @@ const horaInicioExtra = document.getElementById("horaInicioExtra");
 const horaFinExtra = document.getElementById("horaFinExtra");
 const observacionesExtra = document.getElementById("observacionesExtra");
 
+const menuProfesor = document.getElementById("menuProfesor");
+const menuAdmin = document.getElementById("menuAdmin");
+
+if (menuProfesor && usuario.roles.includes("profesor")) {
+    menuProfesor.style.display = "inline-block";
+}
+
+if (menuAdmin && usuario.roles.includes("admin")) {
+    menuAdmin.style.display = "inline-block";
+}
+
 let reservasFijasOriginales = [];
+
+/* FORMATEAR FECHAS */
+
+function formatearFecha(fecha) {
+    if (!fecha) {
+        return "-";
+    }
+
+    const partes = fecha.split("-");
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+/* LISTADO FECHAS/HORAS RESERVAS FIJAS */
+
+function obtenerDiaSemana(fecha) {
+    const dias = [
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado"
+    ];
+
+    const fechaObjeto = new Date(`${fecha}T00:00:00`);
+    return dias[fechaObjeto.getDay()];
+}
+
 
 /* MOSTRAR / OCULTAR SECCIONES */
 
@@ -239,7 +279,7 @@ function mostrarReservasFijas(reservas) {
                 <p><strong>Pista:</strong> ${reserva.pista}</p>
                 <p><strong>Día:</strong> ${reserva.dia_semana}</p>
                 <p><strong>Horario:</strong> ${reserva.hora_inicio} - ${reserva.hora_fin}</p>
-                <p><strong>Vigencia:</strong> ${reserva.fecha_inicio} → ${reserva.fecha_fin}</p>
+                <p><strong>Vigencia:</strong> ${formatearFecha(reserva.fecha_inicio)} → ${formatearFecha(reserva.fecha_fin)}</p>
                 <p>
                     <strong>Estado:</strong>
                     <span class="estado-reserva-fija ${estadoClase}">
@@ -249,9 +289,6 @@ function mostrarReservasFijas(reservas) {
                 <p><strong>Observaciones:</strong> ${reserva.observaciones || "-"}</p>
 
                 ${reserva.activa == 1 ? `
-                    <button onclick="verDetalleReservaFija(${reserva.id_reserva_fija})">
-                        Ver detalle
-                    </button>
 
                     <button onclick="abrirLiberacion(${reserva.id_reserva_fija}, ${reserva.id_profesor})">
                         Liberar clase
@@ -269,6 +306,10 @@ function mostrarReservasFijas(reservas) {
 
                     <button onclick="desactivarReservaFija(${reserva.id_reserva_fija})">
                         Desactivar reserva fija
+                    </button>
+
+                    <button onclick="verDetalleReservaFija(${reserva.id_reserva_fija})">
+                        Ver detalle
                     </button>
                 ` : ""}
 
@@ -300,7 +341,7 @@ async function verDetalleReservaFija(idReservaFija) {
     if (datos.excepciones.length > 0) {
         excepcionesHtml = datos.excepciones.map(excepcion => `
             <div class="detalle-item">
-                <p><strong>Fecha:</strong> ${excepcion.fecha}</p>
+                <p><strong>Fecha:</strong> ${formatearFecha(excepcion.fecha)}</p>
                 <p><strong>Motivo:</strong> ${excepcion.motivo || "-"}</p>
             </div>
         `).join("");
@@ -309,14 +350,20 @@ async function verDetalleReservaFija(idReservaFija) {
     let extrasHtml = "<p>No hay recuperaciones registradas.</p>";
 
     if (datos.reservas_extra.length > 0) {
-        extrasHtml = datos.reservas_extra.map(extra => `
-            <div class="detalle-item">
-                <p><strong>Fecha:</strong> ${extra.fecha}</p>
-                <p><strong>Horario:</strong> ${extra.hora_inicio} - ${extra.hora_fin}</p>
-                <p><strong>Pista:</strong> ${extra.pista}</p>
-                <p><strong>Observaciones:</strong> ${extra.observaciones || "-"}</p>
-            </div>
-        `).join("");
+        extrasHtml = datos.reservas_extra.map(extra => {
+            const estadoExtra = extra.activa == 1 ? "Activa" : "Cancelada";
+            const claseEstadoExtra = extra.activa == 1 ? "estado-activa-fija" : "estado-inactiva-fija";
+
+            return `
+                <div class="detalle-item">
+                    <p><strong>Fecha:</strong> ${formatearFecha(extra.fecha)}</p>
+                    <p><strong>Horario:</strong> ${extra.hora_inicio} - ${extra.hora_fin}</p>
+                    <p><strong>Pista:</strong> ${extra.pista}</p>
+                    <p><strong>Estado:</strong> <span class="${claseEstadoExtra}">${estadoExtra}</span></p>
+                    <p><strong>Observaciones:</strong> ${extra.observaciones || "-"}</p>
+                </div>
+            `;
+        }).join("");
     }
 
     detalleReservaFijaDiv.innerHTML = `
@@ -326,7 +373,7 @@ async function verDetalleReservaFija(idReservaFija) {
             <p><strong>Pista:</strong> ${reserva.pista}</p>
             <p><strong>Día:</strong> ${reserva.dia_semana}</p>
             <p><strong>Horario:</strong> ${reserva.hora_inicio} - ${reserva.hora_fin}</p>
-            <p><strong>Vigencia:</strong> ${reserva.fecha_inicio} → ${reserva.fecha_fin}</p>
+            <p><strong>Vigencia:</strong> ${formatearFecha(reserva.fecha_inicio)} → ${formatearFecha(reserva.fecha_fin)}</p>
         </div>
 
         <hr>
@@ -343,11 +390,34 @@ async function verDetalleReservaFija(idReservaFija) {
     modalDetalleReservaFija.style.display = "flex";
 }
 
-function abrirLiberacion(idReservaFija, idProfesor) {
+async function abrirLiberacion(idReservaFija, idProfesor) {
     idReservaFijaLiberar.value = idReservaFija;
     idProfesorLiberar.value = idProfesor;
-    fechaLiberar.value = "";
     motivoLiberar.value = "";
+
+    fechaLiberar.innerHTML = "";
+
+    const respuesta = await fetch(
+        `../../backend/routes/fechas_reserva_fija.php?id_reserva_fija=${idReservaFija}`
+    );
+
+    const datos = await respuesta.json();
+
+    if (!datos.success || datos.fechas.length === 0) {
+        fechaLiberar.innerHTML = `
+            <option value="">No hay clases disponibles para liberar</option>
+        `;
+    } else {
+        datos.fechas.forEach(item => {
+            const etiqueta = item.tipo === "recuperacion" ? " (Recuperación)" : "";
+
+            fechaLiberar.innerHTML += `
+                <option value="${item.tipo}|${item.fecha}|${item.id_reserva_extra || ""}">
+                    ${obtenerDiaSemana(item.fecha)} - ${formatearFecha(item.fecha)} - ${item.hora_inicio.substring(0,5)} - ${item.hora_fin.substring(0,5)}${etiqueta}
+                </option>
+            `;
+        });
+    }
 
     modalLiberar.style.display = "flex";
 }
@@ -359,18 +429,43 @@ document.getElementById("btnCancelarLiberar").addEventListener("click", function
 document.getElementById("btnConfirmarLiberar").addEventListener("click", liberarClase);
 
 async function liberarClase() {
-    const respuesta = await fetch("../../backend/routes/liberar_reserva_fija.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            id_reserva_fija: idReservaFijaLiberar.value,
-            id_profesor: idProfesorLiberar.value,
-            fecha: fechaLiberar.value,
-            motivo: motivoLiberar.value
-        })
-    });
+    const seleccion = fechaLiberar.value.split("|");
+
+    const tipo = seleccion[0];
+    const fecha = seleccion[1];
+    const idReservaExtra = seleccion[2];
+
+    if (!fechaLiberar.value) {
+        alert("Selecciona una clase");
+        return;
+    }
+
+    let respuesta;
+
+    if (tipo === "recuperacion") {
+        respuesta = await fetch("../../backend/routes/cancelar_reserva_extra_clase.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                id_reserva_extra: idReservaExtra
+            })
+        });
+    } else {
+        respuesta = await fetch("../../backend/routes/liberar_reserva_fija.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                id_reserva_fija: idReservaFijaLiberar.value,
+                id_profesor: idProfesorLiberar.value,
+                fecha: fecha,
+                motivo: motivoLiberar.value
+            })
+        });
+    }
 
     const resultado = await respuesta.json();
 

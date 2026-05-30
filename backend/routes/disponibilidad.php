@@ -105,12 +105,17 @@ try {
 
     // Reservas normales activas
     $sql = "SELECT 
-                hora_inicio,
-                hora_fin
-            FROM reserva
-            WHERE id_pista = :id_pista
-            AND fecha = :fecha
-            AND estado = 'activa'";
+                r.id_reserva,
+                r.id_usuario,
+                r.hora_inicio,
+                r.hora_fin,
+                u.alias AS reservado_por
+            FROM reserva r
+            INNER JOIN usuario u
+                ON r.id_usuario = u.id_usuario
+            WHERE r.id_pista = :id_pista
+            AND r.fecha = :fecha
+            AND r.estado = 'activa'";
 
     $stmt = $conexion->prepare($sql);
     $stmt->execute([
@@ -123,9 +128,13 @@ try {
     // Reservas fijas activas para ese día y fecha
     $sql = "SELECT 
                 rf.id_reserva_fija,
+                rf.id_profesor,
                 rf.hora_inicio,
-                rf.hora_fin
+                rf.hora_fin,
+                u.alias AS profesor
             FROM reserva_fija rf
+            INNER JOIN usuario u
+                ON rf.id_profesor = u.id_usuario
             WHERE rf.id_pista = :id_pista
             AND rf.dia_semana = :dia_semana
             AND rf.activa = 1
@@ -149,11 +158,19 @@ try {
 
     // Reservas extra de clase
     $sql = "SELECT 
-                hora_inicio,
-                hora_fin
-            FROM reserva_extra_clase
-            WHERE id_pista = :id_pista
-            AND fecha = :fecha";
+                rec.id_reserva_extra,
+                rec.hora_inicio,
+                rec.hora_fin,
+                rf.id_profesor,
+                u.alias AS profesor
+            FROM reserva_extra_clase rec
+            INNER JOIN reserva_fija rf
+                ON rec.id_reserva_fija = rf.id_reserva_fija
+            INNER JOIN usuario u
+                ON rf.id_profesor = u.id_usuario
+            WHERE rec.id_pista = :id_pista
+            AND rec.fecha = :fecha
+            AND rec.activa = 1";
 
     $stmt = $conexion->prepare($sql);
     $stmt->execute([
@@ -166,6 +183,12 @@ try {
     foreach ($tramos as &$tramo) {
         $tramo["estado"] = "libre";
         $tramo["tipo_ocupacion"] = null;
+        $tramo["ocupado_por"] = null;
+        $tramo["id_reserva"] = null;
+        $tramo["id_reserva_fija"] = null;
+        $tramo["id_usuario_reservador"] = null;
+        $tramo["id_profesor"] = null;
+        $tramo["id_reserva_extra"] = null;
 
         foreach ($reservas as $reserva) {
             if (
@@ -174,6 +197,9 @@ try {
             ) {
                 $tramo["estado"] = "reservado";
                 $tramo["tipo_ocupacion"] = "reserva_normal";
+                $tramo["ocupado_por"] = $reserva["reservado_por"];
+                $tramo["id_reserva"] = $reserva["id_reserva"];
+                $tramo["id_usuario_reservador"] = $reserva["id_usuario"];
                 break;
             }
         }
@@ -186,6 +212,9 @@ try {
                 ) {
                     $tramo["estado"] = "reservado";
                     $tramo["tipo_ocupacion"] = "reserva_fija";
+                    $tramo["ocupado_por"] = $reservaFija["profesor"];
+                    $tramo["id_reserva_fija"] = $reservaFija["id_reserva_fija"];
+                    $tramo["id_profesor"] = $reservaFija["id_profesor"];
                     break;
                 }
             }
@@ -199,6 +228,9 @@ try {
                 ) {
                     $tramo["estado"] = "reservado";
                     $tramo["tipo_ocupacion"] = "reserva_extra_clase";
+                    $tramo["ocupado_por"] = $reservaExtra["profesor"];
+                    $tramo["id_profesor"] = $reservaExtra["id_profesor"];
+                    $tramo["id_reserva_extra"] = $reservaExtra["id_reserva_extra"];
                     break;
                 }
             }

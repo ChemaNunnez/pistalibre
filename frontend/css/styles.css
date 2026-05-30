@@ -297,6 +297,9 @@ button:hover {
 .btn-reservar {
     background-color: #2E7D32;
     padding: 8px 12px;
+
+    min-width: 130px;
+    text-align: center;
 }
 
 .btn-reservar:disabled {
@@ -632,4 +635,65 @@ select {
 .modal-content h4 {
     color: #1E5AA8;
     margin-bottom: 10px;
+}
+
+.reserva-fija-card button,
+.usuario-card button {
+    margin: 6px 6px 0 0;
+}
+
+@media (max-width: 768px) {
+    .reserva-fija-card button,
+    .usuario-card button {
+        width: 100%;
+        margin: 8px 0 0 0;
+    }
+}
+
+.fecha-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.fecha-control input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.fecha-control button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.modal-content select,
+.modal-content input,
+.modal-content textarea {
+    width: 100%;
+}
+
+.modal-detalle-content {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-detalle-content #detalleReservaFija {
+    overflow-y: auto;
+    max-height: 60vh;
+    padding-right: 6px;
+}
+
+.modal-detalle-content #btnCerrarDetalleReservaFija {
+    margin-top: 12px;
 }

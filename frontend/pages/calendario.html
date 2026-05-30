@@ -16,6 +16,8 @@
         <a href="dashboard.html">Inicio</a>
         <a href="calendario.html">Pistas</a>
         <a href="mis_reservas.html">Mis reservas</a>
+        <a href="profesor.html" id="menuProfesor" style="display:none;">Profesor</a>
+        <a href="admin.html" id="menuAdmin" style="display:none;">Administración</a>
         <button id="btnLogout">Cerrar sesión</button>
     </nav>
 </header>
@@ -37,7 +39,12 @@
         <select id="pista"></select>
 
         <label for="fecha">Fecha</label>
-        <input type="date" id="fecha">
+
+        <div class="fecha-control">
+            <input type="date" id="fecha">
+            <button type="button" id="btnDiaAnterior">◀</button>
+            <button type="button" id="btnDiaSiguiente">▶</button>
+        </div>
 
         <button id="btnConsultar">Consultar disponibilidad</button>
     </section>
@@ -46,6 +53,54 @@
         <h3>Tramos horarios</h3>
         <div id="tramos"></div>
     </section>
+
+    <div id="modalAcompanantes" class="modal" style="display:none;">
+        <div class="modal-content">
+
+            <h3>Añadir acompañantes</h3>
+
+            <input type="hidden" id="idReservaAcompanante">
+
+            <p>Reserva creada correctamente. Puedes añadir acompañantes por alias.</p>
+
+            <label>Alias del acompañante</label>
+            <input type="text" id="aliasAcompananteReserva" placeholder="Ej: Chema">
+
+            <button id="btnAgregarAcompananteReserva">
+                Añadir acompañante
+            </button>
+
+            <button id="btnCerrarAcompanantes">
+                Finalizar
+            </button>
+
+            <div id="listaAcompanantesReserva"></div>
+
+        </div>
+    </div>
+
+    <div id="modalLiberarClase" class="modal" style="display:none;">
+        <div class="modal-content">
+
+            <h3>Liberar clase</h3>
+
+            <input type="hidden" id="tipoClaseLiberar">
+            <input type="hidden" id="idReservaFijaLiberar">
+            <input type="hidden" id="idReservaExtraLiberar">
+            <input type="hidden" id="idProfesorLiberar">
+            <input type="hidden" id="fechaClaseLiberar">
+
+            <p id="textoClaseLiberar"></p>
+
+            <label>Motivo</label>
+            <input type="text" id="motivoClaseLiberar">
+
+            <button id="btnConfirmarLiberarClase">Confirmar</button>
+            <button id="btnCancelarLiberarClase">Cancelar</button>
+
+        </div>
+    </div>
+
 </main>
 
 <script src="../js/calendario.js"></script>

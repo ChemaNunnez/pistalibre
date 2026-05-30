@@ -96,11 +96,6 @@
     </section>
 
     <section class="tabla-card">
-        <h3>Resultado</h3>
-        <div id="resultado"></div>
-    </section>
-
-    <section class="tabla-card">
         <h3>Reservas fijas existentes</h3>
 
         <div id="reservasFijas">
@@ -114,8 +109,8 @@
 
                 <input type="hidden" id="idReservaFijaLiberar">
 
-                <label>Fecha</label>
-                <input type="date" id="fechaLiberar">
+                <label>Clase a liberar</label>
+                <select id="fechaLiberar"></select>
 
                 <label>Motivo</label>
                 <input type="text" id="motivoLiberar">
@@ -160,7 +155,7 @@
         </div>
 
         <div id="modalDetalleReservaFija" class="modal" style="display:none;">
-                <div class="modal-content">
+                <div class="modal-content modal-detalle-content">
 
                     <h3>Detalle de reserva fija</h3>
 

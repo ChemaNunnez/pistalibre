@@ -110,6 +110,7 @@ try {
                 rec.hora_fin,
 
                 rec.observaciones,
+                rec.activa,
 
                 p.nombre AS pista
 

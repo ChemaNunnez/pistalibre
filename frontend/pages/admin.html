@@ -17,7 +17,7 @@
         <a href="dashboard.html">Inicio</a>
         <a href="calendario.html">Pistas</a>
         <a href="mis_reservas.html">Mis reservas</a>
-        <a href="admin.html">Admin</a>
+        <a href="admin.html">Administración</a>
         <button id="btnLogout">Cerrar sesión</button>
     </nav>
 </header>
@@ -41,7 +41,7 @@
 
                 <select id="filtroRol">
                     <option value="todos">Todos los roles</option>
-                    <option value="admin">Admin</option>
+                    <option value="admin">Administración</option>
                     <option value="profesor">Profesor</option>
                     <option value="usuario">Usuario</option>
                 </select>
@@ -76,12 +76,12 @@
     </section>
 
     <div id="modalDetalleReservaFija" class="modal" style="display:none;">
-    <div class="modal-content">
-        <h3>Detalle de reserva fija</h3>
-        <div id="detalleReservaFija"></div>
-        <button id="btnCerrarDetalleReservaFija">Cerrar</button>
+        <div class="modal-content modal-detalle-content">
+            <h3>Detalle de reserva fija</h3>
+            <div id="detalleReservaFija"></div>
+            <button id="btnCerrarDetalleReservaFija">Cerrar</button>
+        </div>
     </div>
-</div>
 
 <div id="modalLiberar" class="modal" style="display:none;">
     <div class="modal-content">
@@ -90,8 +90,8 @@
         <input type="hidden" id="idReservaFijaLiberar">
         <input type="hidden" id="idProfesorLiberar">
 
-        <label>Fecha</label>
-        <input type="date" id="fechaLiberar">
+        <label>Clase a liberar</label>
+        <select id="fechaLiberar"></select>
 
         <label>Motivo</label>
         <input type="text" id="motivoLiberar">
