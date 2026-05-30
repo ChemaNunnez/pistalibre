@@ -77,6 +77,41 @@ async function cargarReservas() {
                         <p><strong>Resultado:</strong> ${reserva.resultado || "-"}</p>
                         <p><strong>Comentario:</strong> ${reserva.comentario_instalacion || "-"}</p>
                         <p><strong>Valoración:</strong> ${reserva.valoracion || "-"}</p>
+
+                        ${reserva.estado !== "cancelada" ? `
+                            <button onclick="mostrarFormularioEditarAnotacion(${reserva.id_reserva})">
+                                Editar anotación
+                            </button>
+                        ` : ""}
+                    </div>
+                ` : ""}
+
+                ${reserva.resultado || reserva.equipos || reserva.comentario_instalacion ? `
+                    <div class="anotacion-form" id="form_editar_${reserva.id_reserva}" style="display:none;">
+                        <h4>Editar anotación</h4>
+
+                        <label>Equipos</label>
+                        <input type="text" id="equipos_${reserva.id_reserva}" value="${reserva.equipos || ""}">
+
+                        <label>Resultado</label>
+                        <input type="text" id="resultado_${reserva.id_reserva}" value="${reserva.resultado || ""}">
+
+                        <label>Comentario instalación</label>
+                        <textarea id="comentario_${reserva.id_reserva}">${reserva.comentario_instalacion || ""}</textarea>
+
+                        <label>Valoración</label>
+                        <select id="valoracion_${reserva.id_reserva}">
+                            <option value="">Sin valoración</option>
+                            <option value="1" ${reserva.valoracion == 1 ? "selected" : ""}>1 - Muy mala</option>
+                            <option value="2" ${reserva.valoracion == 2 ? "selected" : ""}>2 - Mala</option>
+                            <option value="3" ${reserva.valoracion == 3 ? "selected" : ""}>3 - Correcta</option>
+                            <option value="4" ${reserva.valoracion == 4 ? "selected" : ""}>4 - Buena</option>
+                            <option value="5" ${reserva.valoracion == 5 ? "selected" : ""}>5 - Muy buena</option>
+                        </select>
+
+                        <button onclick="crearAnotacion(${reserva.id_reserva})">
+                            Guardar cambios
+                        </button>
                     </div>
                 ` : ""}
 
@@ -211,6 +246,16 @@ async function quitarAcompanante(idReserva, aliasAcompanante) {
     }
 }
 
+function mostrarFormularioEditarAnotacion(idReserva) {
+    const formulario = document.getElementById(`form_editar_${idReserva}`);
+
+    if (formulario.style.display === "none") {
+        formulario.style.display = "block";
+    } else {
+        formulario.style.display = "none";
+    }
+}
+
 async function crearAnotacion(idReserva) {
     const equipos = document.getElementById(`equipos_${idReserva}`).value.trim();
     const resultado = document.getElementById(`resultado_${idReserva}`).value.trim();
@@ -235,7 +280,7 @@ async function crearAnotacion(idReserva) {
     const datos = await respuesta.json();
 
     if (datos.success) {
-        alert("Anotación creada correctamente");
+        alert(datos.mensaje);
         cargarReservas();
     } else {
         alert(datos.error);

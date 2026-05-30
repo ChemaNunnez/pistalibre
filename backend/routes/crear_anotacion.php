@@ -100,15 +100,34 @@ try {
         ":id_reserva" => $id_reserva
     ]);
 
-    if ($stmt->fetch()) {
-        $conexion->rollBack();
-        http_response_code(409);
-        echo json_encode([
-            "success" => false,
-            "error" => "Esta reserva ya tiene una anotación"
-        ]);
-        exit;
-    }
+    $anotacionExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($anotacionExistente) {
+    $sql = "UPDATE anotacion
+            SET equipos = :equipos,
+                resultado = :resultado,
+                comentario_instalacion = :comentario_instalacion,
+                valoracion = :valoracion
+            WHERE id_reserva = :id_reserva";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([
+        ":id_reserva" => $id_reserva,
+        ":equipos" => $equipos,
+        ":resultado" => $resultado,
+        ":comentario_instalacion" => $comentario_instalacion,
+        ":valoracion" => $valoracion
+    ]);
+
+    $conexion->commit();
+
+    echo json_encode([
+        "success" => true,
+        "mensaje" => "Anotación actualizada correctamente"
+    ], JSON_UNESCAPED_UNICODE);
+
+    exit;
+}
 
     // Insertar anotación
     $sql = "INSERT INTO anotacion (
