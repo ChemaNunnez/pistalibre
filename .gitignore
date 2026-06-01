@@ -10,3 +10,4 @@ Thumbs.db
 
 # Configuración sensible
 backend/config/conexion.php
+backend/config/conexion.local.php

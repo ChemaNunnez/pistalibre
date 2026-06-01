@@ -8,6 +8,12 @@ PistaLibre permite a los usuarios consultar la disponibilidad de pistas deportiv
 
 Además, incorpora funcionalidades específicas para profesores y administradores, permitiendo gestionar clases periódicas, liberar sesiones, programar recuperaciones y administrar usuarios del sistema.
 
+## Aplicación desplegada
+
+La aplicación se encuentra disponible en:
+
+https://pistalibre.infinityfreeapp.com
+
 ## Tecnologías utilizadas
 
 - HTML5
@@ -64,8 +70,8 @@ Configurar los datos de conexión correspondientes a la base de datos local.
 
 ```text
 Administrador
-Email: jmnunnezg04@educarex.es
-Contraseña: chema1234
+Email: administrador1@test.com
+Contraseña: admin123
 
 Profesor
 Email: profesor1@test.com
